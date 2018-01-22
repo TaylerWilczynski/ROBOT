@@ -71,6 +71,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		//Reset timer and then started it upon auton bootup
 		timer.reset();
 		timer.start();
 
@@ -81,6 +82,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		//Loop for auton to follow based on time value.
 		while (timer.get() < 9.0){
 			myRobot.driveCartesian(0, 0.3, 0);
 		}
@@ -95,6 +97,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		//Variables for movement values.
 		double scaledDeadZoneX;
 		double scaledDeadZoneY;
 		double scaledDeadZoneTwist;
