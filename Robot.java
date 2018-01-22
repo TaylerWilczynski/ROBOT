@@ -1,5 +1,5 @@
 package org.usfirst.frc.team5504.robot;
-//this is a test comment
+
 //All the imports necessary from the Java library to use methods/classes
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -26,7 +26,7 @@ public class Robot extends IterativeRobot {
 	Timer timer;
 	
 	//The 4 TalonSRX motors and their corresponding names.
-	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, lift;
+	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, lift, conveyer;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -40,6 +40,7 @@ public class Robot extends IterativeRobot {
 		frontRight = new WPI_TalonSRX(3);
 		rearRight = new WPI_TalonSRX(4);
 		lift = new WPI_TalonSRX(5);
+		conveyer = new WPI_TalonSRX(6);
 		
 		//Camera service to get the camera image at start.
 		CameraServer.getInstance().startAutomaticCapture();
