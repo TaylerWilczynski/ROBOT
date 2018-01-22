@@ -1,5 +1,5 @@
 package org.usfirst.frc.team5504.robot;
-
+//this is a test comment
 //All the imports necessary from the Java library to use methods/classes
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -142,7 +142,7 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during test mode.
 	 */
 	@Override
-	public void estPeriodic() {
+	public void testPeriodic() {
 		LiveWindow();
 	}
 
