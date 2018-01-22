@@ -26,7 +26,7 @@ public class Robot extends IterativeRobot {
 	Timer timer;
 	
 	//The 4 TalonSRX motors and their corresponding names.
-	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, lift, conveyer;
+	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer, liftOne, liftTwo, liftThree;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -39,8 +39,11 @@ public class Robot extends IterativeRobot {
 		rearLeft = new WPI_TalonSRX(2);
 		frontRight = new WPI_TalonSRX(3);
 		rearRight = new WPI_TalonSRX(4);
-		lift = new WPI_TalonSRX(5);
-		conveyer = new WPI_TalonSRX(6);
+		liftOne = new WPI_TalonSRX(5);
+		liftTwo = new WPI_TalonSRX(6);
+		liftThree = new WPI_TalonSRX(7);
+		conveyer = new WPI_TalonSRX(8);
+		
 		
 		//Camera service to get the camera image at start.
 		CameraServer.getInstance().startAutomaticCapture();
@@ -129,13 +132,19 @@ public class Robot extends IterativeRobot {
         		(scaledDeadZoneTwist * throttle), 0);
 		
         if (stick.getRawButton(5)) {
-        	lift.set(.2);
+        	liftOne.set(.2);
+        	liftTwo.set(.2);
+        	liftThree.set(.2);
         }
         else if (stick.getRawButton(3)) {
-        	lift.set(-.2);
+        	liftOne.set(-.2);
+        	liftTwo.set(-.2);
+        	liftThree.set(-.2);
         }
         else {
-        	lift.set(0);
+        	liftOne.set(0);
+        	liftTwo.set(0);
+        	liftThree.set(0);
         }
 	}
 
