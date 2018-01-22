@@ -146,6 +146,16 @@ public class Robot extends IterativeRobot {
         	liftTwo.set(0);
         	liftThree.set(0);
         }
+        
+        if (stick.getRawButton(6)) {
+        	conveyer.set(0.2);
+        }
+        else if (stick.getRawButton(4)) {
+        	conveyer.set(-0.2);
+        }
+        else {
+        	conveyer.set(0);
+        }
 	}
 
 	/**
