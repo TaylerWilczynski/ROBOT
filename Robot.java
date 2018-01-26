@@ -8,13 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.CameraServer;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.properties file in the
- * project.
- */
+//Beginning class to define what type of robot setup the code should follow.
 public class Robot extends IterativeRobot {
 	//Type of robot drive method named myRobot.
 	MecanumDrive myRobot;
@@ -28,20 +22,23 @@ public class Robot extends IterativeRobot {
 	//The 4 TalonSRX motors and their corresponding names.
 	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer, liftOne, liftTwo, liftThree;
 	
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
+	//Method ran when the robot first boots up. Robot Basic Parameters
 	@Override
 	public void robotInit() {
 		//Assigned serial codes for CANTalon motors to control.
-		frontLeft = new WPI_TalonSRX(1);
-		rearLeft = new WPI_TalonSRX(2);
-		frontRight = new WPI_TalonSRX(3);
-		rearRight = new WPI_TalonSRX(4);
-		liftOne = new WPI_TalonSRX(5);
+		
+		//Wheel Motor Controllers
+		frontLeft = new WPI_TalonSRX(1);		//Front Left Wheel
+		rearLeft = new WPI_TalonSRX(2);			//Rear Left Wheel
+		frontRight = new WPI_TalonSRX(3);		//Front Right Wheel
+		rearRight = new WPI_TalonSRX(4);		//Rear Right Wheel
+		
+		//Lift Motor Controllers
+		liftOne = new WPI_TalonSRX(5);			
 		liftTwo = new WPI_TalonSRX(6);
 		liftThree = new WPI_TalonSRX(7);
+		
+		//Conveyer Motor Controller
 		conveyer = new WPI_TalonSRX(8);
 		
 		
@@ -71,91 +68,105 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		//Reset timer and then started it upon auton bootup
+		//Reset timer
 		timer.reset();
+		//Start timer
 		timer.start();
 
 	}
 
-	/**
-	 * This function is called periodically during autonomous.
-	 */
+	//When Autonomous is Running, this code will run.
 	@Override
 	public void autonomousPeriodic() {
-		//Loop for auton to follow based on time value.
+		//Move forward at a third the speed as long as timer is less than 9.
 		while (timer.get() < 9.0){
 			myRobot.driveCartesian(0, 0.3, 0);
 		}
-
+			/**TODO Write Auton Code**/
 		}
 		
 		
 	
 
-	/**
-	 * This function is called periodically during operator control.
-	 */
+	//When Teleop is Running, this code will run.
 	@Override
 	public void teleopPeriodic() {
-		//Variables for movement values.
+		//Scaled and Dead-zoned Axis Variables
 		double scaledDeadZoneX;
 		double scaledDeadZoneY;
 		double scaledDeadZoneTwist;
+		
+		//Throttle Variable
 		double throttle;
-		double threshHold = 0.1;
-				
+		
+		//ThreshHold Variables for removing high-sensitivity
+		double threshHoldY = 0.1;
+		double threshHoldX = 0.2;
+		double threshHoldZ = 0.1;
+		
+		//Set Throttle to start at 0 (Lowest) and max out at 1 (Highest).
 		throttle = (stick.getThrottle() * -1 + 1) / 2;
 		
-		if (stick.getX() > threshHold || stick.getX() < threshHold * -1) {
-			scaledDeadZoneX = map(stick.getX(), threshHold, 1, 0, 1);
+		//Sets power to motors if joystick pushed far enough left/right. 0 power if not.
+		if (stick.getX() > threshHoldX || stick.getX() < threshHoldX * -1) {
+			scaledDeadZoneX = map(stick.getX(), threshHoldX, 1, 0, 1);
 			System.out.println("Scaled: " + scaledDeadZoneX + "\t Raw: " + stick.getX());
 		}
 		else {
 			scaledDeadZoneX = 0;
 		}
 		
-		if (stick.getY() > threshHold || stick.getY() < threshHold * -1) {
-			scaledDeadZoneY = map(stick.getY(), threshHold, 1, 0, 1);
+		//Sets power to motors if joystick pushed far enough up/down. 0 power if not.
+		if (stick.getY() > threshHoldY || stick.getY() < threshHoldY * -1) {
+			scaledDeadZoneY = map(stick.getY(), threshHoldY, 1, 0, 1);
 		}
 		else {
 			scaledDeadZoneY = 0;
 		}
 		
-		if (stick.getTwist() > threshHold || stick.getTwist() < threshHold * -1) {
-			scaledDeadZoneTwist = map(stick.getTwist(), threshHold, 1, 0, 1);
+		//Sets power to motors if joystick twisted far enough left/right. 0 power if not.
+		if (stick.getTwist() > threshHoldZ || stick.getTwist() < threshHoldZ * -1) {
+			scaledDeadZoneTwist = map(stick.getTwist(), threshHoldZ, 1, 0, 1);
 
 		}
 		else {
 			scaledDeadZoneTwist = 0;
 		}
 		
+		//Sets X, Y, and Z axis power values to the scaled and deadzoned axis variables multiplied by the throttle.
         myRobot.driveCartesian(
         		(scaledDeadZoneX * throttle),
         		(scaledDeadZoneY * throttle * -1),
         		(scaledDeadZoneTwist * throttle), 0);
 		
+        //If top left button is pressed, set lift motors to go forward.
         if (stick.getRawButton(5)) {
         	liftOne.set(.2);
         	liftTwo.set(.2);
         	liftThree.set(.2);
         }
+        //If botton left button is pressed, set lift motors to go backwards.
         else if (stick.getRawButton(3)) {
         	liftOne.set(-.2);
         	liftTwo.set(-.2);
         	liftThree.set(-.2);
         }
+        //If neither button is pressed, set power to 0.
         else {
         	liftOne.set(0);
         	liftTwo.set(0);
         	liftThree.set(0);
         }
         
+        //If top right button is pressed, set conveyer motor to go forward.
         if (stick.getRawButton(6)) {
         	conveyer.set(0.2);
         }
+        //If bottom right button is pressed, set conveyer motor to go backwards.
         else if (stick.getRawButton(4)) {
         	conveyer.set(-0.2);
         }
+        //If neither button is pressed, set power to 0.
         else {
         	conveyer.set(0);
         }
@@ -174,6 +185,7 @@ public class Robot extends IterativeRobot {
 		
 	}
 	
+	//Mapping function to prevent motors from starting at 10% power by default. Scales variables.
 	double map(double x, double in_min, double in_max, double out_min, double out_max)
 	{
 	  return (x - in_min) * (out_max - out_min + 1) / (in_max - in_min + 1) + out_min;
