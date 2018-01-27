@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
 
 //Beginning class to define what type of robot setup the code should follow.
-public class Robot extends IterativeRobot {
+public class Robot extends IterativeRobot 
+{
 	
 	//Type of robot drive method named myRobot.
 	MecanumDrive myRobot;
@@ -26,9 +27,10 @@ public class Robot extends IterativeRobot {
 	
 	//Method ran when the robot first boots up. Robot Basic Parameters
 	@Override
-	public void robotInit() {
-		
-		SmartDashboard.putNumber("Autonomous Mode:", 0);
+	public void robotInit() 
+	{
+		//Display on SmartDashboard the options of Autonomous and initialize it with value 0.
+		SmartDashboard.putNumber("(Left = 1, Right = 2) Autonomous Mode:   ", 0);
 		
 		//Assigned serial codes for CANTalon motors to control.
 		
@@ -72,7 +74,8 @@ public class Robot extends IterativeRobot {
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
 	@Override
-	public void autonomousInit() {
+	public void autonomousInit() 
+	{
 		//Reset timer
 		timer.reset();
 		//Start timer
@@ -84,10 +87,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() 
 	{
+		//If value 1 entered, do this.
 		if (SmartDashboard.getNumber("Autonomous Mode:", 0) == 1) 
 		{
 			myRobot.driveCartesian(0, -.3, 0);
 		}
+		//If value 2 entered, do this.
 		else if (SmartDashboard.getNumber("Autonomous Mode:", 0) == 2) 
 		{
 			myRobot.driveCartesian(.3, 0, 0);
@@ -96,7 +101,8 @@ public class Robot extends IterativeRobot {
 	}
 	//When Teleop is Running, this code will run.
 	@Override
-	public void teleopPeriodic() {
+	public void teleopPeriodic() 
+	{
 		//Scaled and Dead-zoned Axis Variables
 		double scaledDeadZoneX;
 		double scaledDeadZoneY;
@@ -114,28 +120,33 @@ public class Robot extends IterativeRobot {
 		throttle = (stick.getThrottle() * -1 + 1) / 2;
 		
 		//Sets power to motors if joystick pushed far enough left/right. 0 power if not.
-		if (stick.getX() > threshHoldX || stick.getX() < threshHoldX * -1) {
+		if (stick.getX() > threshHoldX || stick.getX() < threshHoldX * -1) 
+		{
 			scaledDeadZoneX = map(stick.getX(), threshHoldX, 1, 0, 1);
 			System.out.println("Scaled: " + scaledDeadZoneX + "\t Raw: " + stick.getX());
 		}
-		else {
+		else 
+		{
 			scaledDeadZoneX = 0;
 		}
 		
 		//Sets power to motors if joystick pushed far enough up/down. 0 power if not.
-		if (stick.getY() > threshHoldY || stick.getY() < threshHoldY * -1) {
+		if (stick.getY() > threshHoldY || stick.getY() < threshHoldY * -1) 
+		{
 			scaledDeadZoneY = map(stick.getY(), threshHoldY, 1, 0, 1);
 		}
-		else {
+		else 
+		{
 			scaledDeadZoneY = 0;
 		}
 		
 		//Sets power to motors if joystick twisted far enough left/right. 0 power if not.
-		if (stick.getTwist() > threshHoldZ || stick.getTwist() < threshHoldZ * -1) {
+		if (stick.getTwist() > threshHoldZ || stick.getTwist() < threshHoldZ * -1) 
+		{
 			scaledDeadZoneTwist = map(stick.getTwist(), threshHoldZ, 1, 0, 1);
-
 		}
-		else {
+		else 
+		{
 			scaledDeadZoneTwist = 0;
 		}
 		
@@ -146,34 +157,40 @@ public class Robot extends IterativeRobot {
         		(scaledDeadZoneTwist * throttle), 0);
 		
         //If top left button is pressed, set lift motors to go forward.
-        if (stick.getRawButton(5)) {
+        if (stick.getRawButton(5)) 
+        {
         	liftOne.set(.2);
         	liftTwo.set(.2);
         	liftThree.set(.2);
         }
         //If botton left button is pressed, set lift motors to go backwards.
-        else if (stick.getRawButton(3)) {
+        else if (stick.getRawButton(3)) 
+        {
         	liftOne.set(-.2);
         	liftTwo.set(-.2);
         	liftThree.set(-.2);
         }
         //If neither button is pressed, set power to 0.
-        else {
+        else 
+        {
         	liftOne.set(0);
         	liftTwo.set(0);
         	liftThree.set(0);
         }
         
         //If top right button is pressed, set conveyer motor to go forward.
-        if (stick.getRawButton(6)) {
+        if (stick.getRawButton(6)) 
+        {
         	conveyer.set(0.2);
         }
         //If bottom right button is pressed, set conveyer motor to go backwards.
-        else if (stick.getRawButton(4)) {
+        else if (stick.getRawButton(4)) 
+        {
         	conveyer.set(-0.2);
         }
         //If neither button is pressed, set power to 0.
-        else {
+        else 
+        {
         	conveyer.set(0);
         }
 	}
@@ -182,13 +199,14 @@ public class Robot extends IterativeRobot {
 	 * This function is called periodically during test mode.
 	 */
 	@Override
-	public void testPeriodic() {
+	public void testPeriodic() 
+	{
 		LiveWindow();
 	}
 
-	private void LiveWindow() {
-		// TODO Auto-generated method stub
-		
+	private void LiveWindow() 
+	{
+		// TODO Auto-generated method stub	
 	}
 	
 	//Mapping function to prevent motors from starting at 10% power by default. Scales variables.
