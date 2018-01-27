@@ -6,10 +6,12 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
 
 //Beginning class to define what type of robot setup the code should follow.
 public class Robot extends IterativeRobot {
+	
 	//Type of robot drive method named myRobot.
 	MecanumDrive myRobot;
 	
@@ -25,6 +27,9 @@ public class Robot extends IterativeRobot {
 	//Method ran when the robot first boots up. Robot Basic Parameters
 	@Override
 	public void robotInit() {
+		
+		SmartDashboard.putNumber("Autonomous Mode:", 0);
+		
 		//Assigned serial codes for CANTalon motors to control.
 		
 		//Wheel Motor Controllers
@@ -77,17 +82,18 @@ public class Robot extends IterativeRobot {
 
 	//When Autonomous is Running, this code will run.
 	@Override
-	public void autonomousPeriodic() {
-		//Move forward at a third the speed as long as timer is less than 9.
-		while (timer.get() < 9.0){
-			myRobot.driveCartesian(0, 0.3, 0);
+	public void autonomousPeriodic() 
+	{
+		if (SmartDashboard.getNumber("Autonomous Mode:", 0) == 1) 
+		{
+			myRobot.driveCartesian(0, -.3, 0);
 		}
-			/**TODO Write Auton Code**/
+		else if (SmartDashboard.getNumber("Autonomous Mode:", 0) == 2) 
+		{
+			myRobot.driveCartesian(.3, 0, 0);
 		}
-		
-		
-	
-
+			
+	}
 	//When Teleop is Running, this code will run.
 	@Override
 	public void teleopPeriodic() {
