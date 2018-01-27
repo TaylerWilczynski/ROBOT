@@ -181,12 +181,12 @@ public class Robot extends IterativeRobot
         //If top right button is pressed, set conveyer motor to go forward.
         if (stick.getRawButton(6)) 
         {
-        	conveyer.set(0.2);
+        	conveyer.set(-1);
         }
         //If bottom right button is pressed, set conveyer motor to go backwards.
         else if (stick.getRawButton(4)) 
         {
-        	conveyer.set(-0.2);
+        	conveyer.set(1);
         }
         //If neither button is pressed, set power to 0.
         else 
