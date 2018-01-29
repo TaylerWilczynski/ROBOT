@@ -88,12 +88,12 @@ public class Robot extends IterativeRobot
 	public void autonomousPeriodic() 
 	{
 		//If value 1 entered, do this.
-		if (SmartDashboard.getNumber("Autonomous Mode:", 0) == 1) 
+		if (SmartDashboard.getNumber("(Left = 1, Right = 2) Autonomous Mode:   ", 0) == 1) 
 		{
 			myRobot.driveCartesian(0, -.3, 0);
 		}
 		//If value 2 entered, do this.
-		else if (SmartDashboard.getNumber("Autonomous Mode:", 0) == 2) 
+		else if (SmartDashboard.getNumber("(Left = 1, Right = 2) Autonomous Mode:   ", 0) == 2) 
 		{
 			myRobot.driveCartesian(.3, 0, 0);
 		}
