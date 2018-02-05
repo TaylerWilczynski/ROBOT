@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 //Beginning class to define what type of robot setup the code should follow.
 public class Robot extends IterativeRobot 
@@ -22,8 +23,11 @@ public class Robot extends IterativeRobot
 	//Timer to keep track of the time in the match.
 	Timer timer;
 	
+	//Double Solenoid object that extends through terminal 0 and retracts through terminal 1.
+	DoubleSolenoid grabSolenoid = new DoubleSolenoid(0, 1);
+	
 	//The 4 TalonSRX motors and their corresponding names.
-	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer, liftOne, liftTwo, liftThree;
+	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer;
 	
 	//Method ran when the robot first boots up. Robot Basic Parameters
 	@Override
@@ -39,11 +43,6 @@ public class Robot extends IterativeRobot
 		rearLeft = new WPI_TalonSRX(2);			//Rear Left Wheel
 		frontRight = new WPI_TalonSRX(3);		//Front Right Wheel
 		rearRight = new WPI_TalonSRX(4);		//Rear Right Wheel
-		
-		//Lift Motor Controllers
-		liftOne = new WPI_TalonSRX(5);			
-		liftTwo = new WPI_TalonSRX(6);
-		liftThree = new WPI_TalonSRX(7);
 		
 		//Conveyer Motor Controller
 		conveyer = new WPI_TalonSRX(8);
@@ -178,26 +177,20 @@ public class Robot extends IterativeRobot
         		(scaledDeadZoneY * throttle * -1),
         		(scaledDeadZoneTwist * throttle), 0);
 		
-        //If top left button is pressed, set lift motors to go forward.
+        //If top left button is pressed, send air to the lift.
         if (stick.getRawButton(5)) 
         {
-        	liftOne.set(.2);
-        	liftTwo.set(.2);
-        	liftThree.set(.2);
+        	grabSolenoid.set(DoubleSolenoid.Value.kReverse);
         }
-        //If botton left button is pressed, set lift motors to go backwards.
+        //If bottom left button is pressed, retract air from the lift.
         else if (stick.getRawButton(3)) 
         {
-        	liftOne.set(-.2);
-        	liftTwo.set(-.2);
-        	liftThree.set(-.2);
+        	grabSolenoid.set(DoubleSolenoid.Value.kForward);
         }
-        //If neither button is pressed, set power to 0.
+        //If neither button is pressed, don't take/send air to the lift.
         else 
         {
-        	liftOne.set(0);
-        	liftTwo.set(0);
-        	liftThree.set(0);
+        	grabSolenoid.set(DoubleSolenoid.Value.kOff);
         }
         
         //If top right button is pressed, set conveyer motor to go forward.
