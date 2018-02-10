@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 
 //Beginning class to define what type of robot setup the code should follow.
 public class Robot extends IterativeRobot 
@@ -23,6 +25,9 @@ public class Robot extends IterativeRobot
 	//Timer to keep track of the time in the match.
 	Timer timer;
 	
+	//Compressor object to run/shut off compressor.
+	Compressor c = new Compressor(0);
+	
 	//Double Solenoid object that extends through terminal 0 and retracts through terminal 1.
 	DoubleSolenoid grabSolenoid = new DoubleSolenoid(0, 1);
 	
@@ -34,10 +39,8 @@ public class Robot extends IterativeRobot
 	public void robotInit() 
 	{
 		//Display on SmartDashboard the options of Autonomous and initialize it with value 0.
-		SmartDashboard.putNumber("(Left = 1, Right = 2) Autonomous Mode:   ", 0);
-		
-		//Assigned serial codes for CANTalon motors to control.
-		
+		SmartDashboard.putNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   ", 0);
+						
 		//Wheel Motor Controllers
 		frontLeft = new WPI_TalonSRX(1);		//Front Left Wheel
 		rearLeft = new WPI_TalonSRX(2);			//Rear Left Wheel
@@ -46,7 +49,6 @@ public class Robot extends IterativeRobot
 		
 		//Conveyer Motor Controller
 		conveyer = new WPI_TalonSRX(8);
-		
 		
 		//Camera service to get the camera image at start.
 		CameraServer.getInstance().startAutomaticCapture();
@@ -86,37 +88,62 @@ public class Robot extends IterativeRobot
 	@Override
 	public void autonomousPeriodic() 
 	{
-		//If value 1 entered, do this.
-		if (SmartDashboard.getNumber("(Left = 1, Right = 2) Autonomous Mode:   ", 0) == 1.0) 
+		//Initialized string variable to hold FMS value.
+		String gameData;
+		//Retrieve FMS values to use for Auton mode.
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
+		//Value 1 assumes we are on the left side of the field.
+		if (SmartDashboard.getNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   "
+				, 0) == 1.0) 
 		{
-			while (timer.get() < 8.5) 
+			if(gameData.length() > 0)
 			{
-				myRobot.driveCartesian(0, -0.3, 0);
-			}
-			while (timer.get() < 10.9) 
-			{
-				myRobot.driveCartesian(0, 0, 0.3);
-			}
-			while (timer.get() < 11.67) 
-			{
-				myRobot.driveCartesian(0, -0.3, 0);
-			}
+				if(gameData.charAt(0) == 'L')
+				{
+					
+				} 
+				
+				else 
+				{
+					
+				}
+            }
+			
 		}
-		//If value 2 entered, do this.
-		else if (SmartDashboard.getNumber("(Left = 1, Right = 2) Autonomous Mode:   ", 0) == 2.0) 
+		//Value 2 assumes we in the middle of the field.
+		else if (SmartDashboard.getNumber("(Left = 1, Right = 2) Autonomous Mode:   "
+				, 0) == 2.0) 
 		{
-			while (timer.get() < 8.5) 
+			if(gameData.length() > 0)
 			{
-				myRobot.driveCartesian(0, -0.3, 0);
-			}
-			while (timer.get() < 10.9) 
+				if(gameData.charAt(0) == 'L')
+				{
+					
+				} 
+				
+				else 
+				{
+					
+				}
+            }
+		}
+		
+		else if (SmartDashboard.getNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   "
+				,0) == 3.0) 
+		{
+			if(gameData.length() > 0)
 			{
-				myRobot.driveCartesian(0, 0, -0.3);
-			}
-			while (timer.get() < 11.67) 
-			{
-				myRobot.driveCartesian(0, -0.3, 0);
-			}		
+				if(gameData.charAt(0) == 'L')
+				{
+					
+				} 
+				
+				else 
+				{
+					
+				}
+            }
 		}
 			
 	}
@@ -124,6 +151,8 @@ public class Robot extends IterativeRobot
 	@Override
 	public void teleopPeriodic() 
 	{
+		c.setClosedLoopControl(true);
+		
 		//Scaled and Dead-zoned Axis Variables
 		double scaledDeadZoneX;
 		double scaledDeadZoneY;
