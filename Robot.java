@@ -31,8 +31,8 @@ public class Robot extends IterativeRobot
 	//Double Solenoid object that extends through terminal 0 and retracts through terminal 1.
 	DoubleSolenoid grabSolenoid = new DoubleSolenoid(0, 1);
 	
-	//The 4 TalonSRX motors and their corresponding names.
-	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer;
+	//The 6 TalonSRX motors and their corresponding names.
+	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer, winch;
 	
 	//Method ran when the robot first boots up. Robot Basic Parameters
 	@Override
@@ -50,6 +50,9 @@ public class Robot extends IterativeRobot
 		//Conveyer Motor Controller
 		conveyer = new WPI_TalonSRX(8);
 		
+		//Winch Motor Controller
+		winch = new WPI_TalonSRX(6);
+		
 		//Camera service to get the camera image at start.
 		CameraServer.getInstance().startAutomaticCapture();
 		
@@ -61,6 +64,8 @@ public class Robot extends IterativeRobot
 		
 		//Created object and reference variable for the timer value.
 		timer = new Timer();
+		
+		c.start();
 	}
 
 	/**
@@ -164,7 +169,7 @@ public class Robot extends IterativeRobot
 		//ThreshHold Variables for removing high-sensitivity
 		double threshHoldY = 0.1;
 		double threshHoldX = 0.2;
-		double threshHoldZ = 0.1;
+		double threshHoldZ = 0.4;
 		
 		//Set Throttle to start at 0 (Lowest) and max out at 1 (Highest).
 		throttle = (stick.getThrottle() * -1 + 1) / 2;
@@ -172,8 +177,7 @@ public class Robot extends IterativeRobot
 		//Sets power to motors if joystick pushed far enough left/right. 0 power if not.
 		if (stick.getX() > threshHoldX || stick.getX() < threshHoldX * -1) 
 		{
-			scaledDeadZoneX = map(stick.getX(), threshHoldX, 1, 0, 1);
-			System.out.println("Scaled: " + scaledDeadZoneX + "\t Raw: " + stick.getX());
+			scaledDeadZoneX = stick.getX();
 		}
 		else 
 		{
@@ -183,7 +187,7 @@ public class Robot extends IterativeRobot
 		//Sets power to motors if joystick pushed far enough up/down. 0 power if not.
 		if (stick.getY() > threshHoldY || stick.getY() < threshHoldY * -1) 
 		{
-			scaledDeadZoneY = map(stick.getY(), threshHoldY, 1, 0, 1);
+			scaledDeadZoneY = stick.getY();
 		}
 		else 
 		{
@@ -193,7 +197,7 @@ public class Robot extends IterativeRobot
 		//Sets power to motors if joystick twisted far enough left/right. 0 power if not.
 		if (stick.getTwist() > threshHoldZ || stick.getTwist() < threshHoldZ * -1) 
 		{
-			scaledDeadZoneTwist = map(stick.getTwist(), threshHoldZ, 1, 0, 1);
+			scaledDeadZoneTwist = stick.getTwist();
 		}
 		else 
 		{
@@ -206,21 +210,30 @@ public class Robot extends IterativeRobot
         		(scaledDeadZoneY * throttle * -1),
         		(scaledDeadZoneTwist * throttle), 0);
 		
+        /**
+         * Lift Pneumatics Buttons
+        */
+        
         //If top left button is pressed, send air to the lift.
-        if (stick.getRawButton(5)) 
+        if (stick.getRawButton(5) && !stick.getRawButton(3)) 
         {
+        	//grabSolenoid.set(DoubleSolenoid.Value.kReverse);
         	grabSolenoid.set(DoubleSolenoid.Value.kReverse);
         }
         //If bottom left button is pressed, retract air from the lift.
-        else if (stick.getRawButton(3)) 
+        else if (stick.getRawButton(3) && !stick.getRawButton(5)) 
         {
         	grabSolenoid.set(DoubleSolenoid.Value.kForward);
         }
         //If neither button is pressed, don't take/send air to the lift.
-        else 
+        else if (!stick.getRawButton(5) && !stick.getRawButton(3))
         {
         	grabSolenoid.set(DoubleSolenoid.Value.kOff);
         }
+        
+        /**
+         * Conveyer Buttons
+        */
         
         //If top right button is pressed, set conveyer motor to go forward.
         if (stick.getRawButton(6)) 
@@ -236,6 +249,24 @@ public class Robot extends IterativeRobot
         else 
         {
         	conveyer.set(0);
+        }
+        
+        /**
+         * Winch Buttons
+        */
+        
+        //If button 12 on the left is pressed, set winch motor to spin.
+        //Additionally, stop the compressor to save voltage.
+        if (stick.getRawButton(12)) 
+        {
+        	c.stop();
+        	winch.set(1);
+        }
+        
+        //If the button is not pressed, set the motor power to 0.
+        else 
+        {
+        	winch.set(0);
         }
 	}
 
