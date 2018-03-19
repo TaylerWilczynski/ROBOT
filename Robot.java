@@ -19,7 +19,7 @@ public class Robot extends IterativeRobot
 	//Type of robot drive method named myRobot
 	MecanumDrive myRobot;
 	
-	//Joy stick used to drive the robot...
+	//Joy stick used to drive the robot..
 	Joystick stick;
 	
 	//Timer to keep track of the time in the match.
