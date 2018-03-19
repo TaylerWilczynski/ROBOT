@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class Robot extends IterativeRobot 
 {
 	
-	//Type of robot drive method named myRobot.
+	//Type of robot drive method named myRobot
 	MecanumDrive myRobot;
 	
 	//Joy stick used to drive the robot...
