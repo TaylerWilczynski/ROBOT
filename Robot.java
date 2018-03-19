@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 
 //Beginning class to define what type of robot setup the code should follow.
@@ -25,14 +23,8 @@ public class Robot extends IterativeRobot
 	//Timer to keep track of the time in the match.
 	Timer timer;
 	
-	//Compressor object to run/shut off compressor.
-	Compressor c = new Compressor(0);
-	
-	//Double Solenoid object that extends through terminal 0 and retracts through terminal 1.
-	DoubleSolenoid grabSolenoid = new DoubleSolenoid(0, 1);
-	
 	//The 6 TalonSRX motors and their corresponding names.
-	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer, winch;
+	WPI_TalonSRX frontLeft, rearLeft, frontRight, rearRight, conveyer;
 	
 	//Method ran when the robot first boots up. Robot Basic Parameters
 	@Override
@@ -50,9 +42,6 @@ public class Robot extends IterativeRobot
 		//Conveyer Motor Controller
 		conveyer = new WPI_TalonSRX(8);
 		
-		//Winch Motor Controller
-		winch = new WPI_TalonSRX(6);
-		
 		//Camera service to get the camera image at start.
 		CameraServer.getInstance().startAutomaticCapture();
 		
@@ -64,8 +53,6 @@ public class Robot extends IterativeRobot
 		
 		//Created object and reference variable for the timer value.
 		timer = new Timer();
-		
-		c.start();
 	}
 
 	/**
@@ -182,9 +169,7 @@ public class Robot extends IterativeRobot
 	//When Teleop is Running, this code will run.
 	@Override
 	public void teleopPeriodic() 
-	{
-		c.setClosedLoopControl(true);
-		
+	{	
 		//Scaled and Dead-zoned Axis Variables
 		double scaledDeadZoneX;
 		double scaledDeadZoneY;
@@ -235,29 +220,8 @@ public class Robot extends IterativeRobot
         myRobot.driveCartesian(
         		(scaledDeadZoneX * throttle),
         		(scaledDeadZoneY * throttle * -1),
-        		(scaledDeadZoneTwist * throttle), 0);
-		
-        /**
-         * Lift Pneumatics Buttons
-        */
-        
-        //If top left button is pressed, send air to the lift.
-        if (stick.getRawButton(5) && !stick.getRawButton(3)) 
-        {
-        	//grabSolenoid.set(DoubleSolenoid.Value.kReverse);
-        	grabSolenoid.set(DoubleSolenoid.Value.kReverse);
-        }
-        //If bottom left button is pressed, retract air from the lift.
-        else if (stick.getRawButton(3) && !stick.getRawButton(5)) 
-        {
-        	grabSolenoid.set(DoubleSolenoid.Value.kForward);
-        }
-        //If neither button is pressed, don't take/send air to the lift.
-        else if (!stick.getRawButton(5) && !stick.getRawButton(3))
-        {
-        	grabSolenoid.set(DoubleSolenoid.Value.kOff);
-        }
-        
+        		(scaledDeadZoneTwist * throttle), 0);  
+ 
         /**
          * Conveyer Buttons
         */
@@ -276,24 +240,6 @@ public class Robot extends IterativeRobot
         else 
         {
         	conveyer.set(0);
-        }
-        
-        /**
-         * Winch Buttons
-        */
-        
-        //If button 12 on the left is pressed, set winch motor to spin.
-        //Additionally, stop the compressor to save voltage.
-        if (stick.getTrigger()) 
-        {
-        	c.stop();
-        	winch.set(1);
-        }
-        
-        //If the button is not pressed, set the motor power to 0.
-        else 
-        {
-        	winch.set(0);
         }
 	}
 
