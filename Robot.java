@@ -98,59 +98,86 @@ public class Robot extends IterativeRobot
 		//Retrieve FMS values to use for Auton mode.
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
-		//Value 1 assumes we are on the left side of the field.
 		if (SmartDashboard.getNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   "
 				, 0) == 1.0) 
 		{
-			if(gameData.length() > 0)
+			conveyer.set(0);
+			if(gameData.charAt(0) == 'L') 
 			{
-				if(gameData.charAt(0) == 'L')
+				while (timer.get() < 4.5) 
 				{
-					
-				} 
-				
-				else 
-				{
-					
+					myRobot.driveCartesian(0, 0.3, 0);
 				}
-            }
-			
-		}
-		//Value 2 assumes we in the middle of the field.
-		else if (SmartDashboard.getNumber("(Left = 1, Right = 2) Autonomous Mode:   "
-				, 0) == 2.0) 
-		{
-			if(gameData.length() > 0)
+				while (timer.get() < 5.6) 
+				{
+					myRobot.driveCartesian(0, 0, 0.3);
+				}
+				while (timer.get() < 7) 
+				{
+					myRobot.driveCartesian(0, 0.3, 0);
+				}
+				while(timer.get() < 9) 
+				{
+					conveyer.set(-1);
+				}
+			}
+			else 
 			{
-				if(gameData.charAt(0) == 'L')
+				while (timer.get() < 4.5) 
 				{
-					
-				} 
-				
-				else 
-				{
-					
+					myRobot.driveCartesian(0, 0.3, 0);
 				}
-            }
+			}
 		}
 		
 		else if (SmartDashboard.getNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   "
-				,0) == 3.0) 
+				, 0) == 2.0) 
 		{
-			if(gameData.length() > 0)
+			while (timer.get() < 4.5) 
 			{
-				if(gameData.charAt(0) == 'L')
-				{
-					
-				} 
-				
-				else 
-				{
-					
-				}
-            }
+				myRobot.driveCartesian(0, 0.3, 0);
+			}
 		}
-			
+		
+		else if (SmartDashboard.getNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   "
+				, 0) == 3.0) 
+		{
+			conveyer.set(0);
+			if(gameData.charAt(0) == 'R') 
+			{
+				while (timer.get() < 4.5) 
+				{
+					myRobot.driveCartesian(0, 0.3, 0);
+				}
+				while (timer.get() < 5.6) 
+				{
+					myRobot.driveCartesian(0, 0, -0.3);
+				}
+				while (timer.get() < 7) 
+				{
+					myRobot.driveCartesian(0, 0.3, 0);
+				}
+				while(timer.get() < 9) 
+				{
+					conveyer.set(-1);
+				}
+			}
+			else 
+			{
+				while (timer.get() < 4.5) 
+				{
+					myRobot.driveCartesian(0, 0.3, 0);
+				}
+			}
+		}
+		
+		else 
+		{
+			while (timer.get() < 4.5) 
+			{
+				myRobot.driveCartesian(0, 0.3, 0);
+			}
+		}
 	}
 	//When Teleop is Running, this code will run.
 	@Override
@@ -168,7 +195,7 @@ public class Robot extends IterativeRobot
 		
 		//ThreshHold Variables for removing high-sensitivity
 		double threshHoldY = 0.1;
-		double threshHoldX = 0.2;
+		double threshHoldX = 0.1;
 		double threshHoldZ = 0.4;
 		
 		//Set Throttle to start at 0 (Lowest) and max out at 1 (Highest).
@@ -257,7 +284,7 @@ public class Robot extends IterativeRobot
         
         //If button 12 on the left is pressed, set winch motor to spin.
         //Additionally, stop the compressor to save voltage.
-        if (stick.getRawButton(12)) 
+        if (stick.getTrigger()) 
         {
         	c.stop();
         	winch.set(1);
