@@ -120,9 +120,13 @@ public class Robot extends IterativeRobot
 		else if (SmartDashboard.getNumber("(Left = 1, Middle = 2, Right = 3) Autonomous Mode:   "
 				, 0) == 2.0) 
 		{
-			while (timer.get() < 4.5) 
+			conveyer.set(0);
+			if(gameData.charAt(0) == 'L') 
 			{
-				myRobot.driveCartesian(0, 0.3, 0);
+				while (timer.get() < 4.5) 
+				{
+					myRobot.driveCartesian(0, 0.3, 0);
+				}
 			}
 		}
 		
